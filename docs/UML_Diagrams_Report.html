@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartTask — UML Sequence & Communication Diagrams Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      sequence: {
+        mirrorActors: false,
+        useMaxWidth: true,
+        actorFontSize: 13,
+        messageFontSize: 12,
+        noteFontSize: 11
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --primary: #0f172a;
+      --accent: #059669;
+      --accent-light: #ecfdf5;
+      --border: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --bg-card: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: #ffffff;
+      line-height: 1.6;
+      padding: 30px 45px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        color: #000;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+      .diagram-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+      }
+      table {
+        break-inside: avoid;
+      }
+      h1, h2, h3 {
+        break-after: avoid;
+      }
+    }
+
+    /* Print Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    .toolbar h3 {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .print-btn {
+      background: #059669;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .print-btn:hover {
+      background: #047857;
+    }
+
+    /* Header styling */
+    .report-header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 25px;
+      margin-bottom: 30px;
+    }
+    .report-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: var(--bg-card);
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .meta-item strong {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    /* Section Headings */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 36px;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 14px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    /* Callout Card */
+    .callout {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 12px 18px;
+      border-radius: 0 6px 6px 0;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    .callout strong {
+      color: #065f46;
+    }
+
+    /* Diagram Card Containers */
+    .diagram-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 22px 0 28px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      overflow-x: auto;
+    }
+    .diagram-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    tr:nth-child(even) td {
+      background: #fbfcfe;
+    }
+
+    /* Code & Lists */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+    ol, ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print Button Bar (Hidden in Printed PDF) -->
+  <div class="toolbar no-print">
+    <div>
+      <h3>📄 UML Diagrams PDF-Ready Report</h3>
+      <span style="font-size: 12px; opacity: 0.8;">Click the button or press <b>Ctrl + P</b> to export to a pristine PDF</span>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️ Export / Print to PDF</button>
+  </div>
+
+  <!-- Document Header -->
+  <div class="report-header">
+    <div class="report-badge">Software Engineering & Architecture Specification</div>
+    <h1>SmartTask — UML Sequence & Communication Diagrams</h1>
+    <div class="subtitle">Academic Task & Schedule Planner (MERN Architecture Specification)</div>
+    
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Document Type</strong>
+        UML Behavioral Modeling
+      </div>
+      <div class="meta-item">
+        <strong>Standard</strong>
+        OMG UML 2.5
+      </div>
+      <div class="meta-item">
+        <strong>Stack Implementation</strong>
+        MongoDB, Express, React, Node.js
+      </div>
+      <div class="meta-item">
+        <strong>Engine Focus</strong>
+        Heuristic Priority & Time-Blocking
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <h2>1. Overview of UML Interaction Diagrams</h2>
+  <p>
+    In software engineering, <strong>Interaction Diagrams</strong> model the dynamic behavior of an object-oriented system by showing how objects collaborate through message exchanges to accomplish specific use cases. The two primary interaction diagrams standardized by the Object Management Group (OMG) are:
+  </p>
+  <ul>
+    <li>
+      <strong>UML Sequence Diagram:</strong> Emphasizes the <em>time-ordering</em> of messages. Objects are aligned horizontally, and chronological time flows downwards along vertical lifelines. It provides the clearest visualization of call stacks, API handshakes, and synchronous/asynchronous flows.
+    </li>
+    <li>
+      <strong>UML Communication (Collaboration) Diagram:</strong> Emphasizes the <em>structural organization and topology</em> of interacting objects. Participating objects are nodes linked by communication paths, and message sequence is represented using hierarchical numbering (e.g., <code>1</code>, <code>1.1</code>, <code>1.2</code>, <code>2</code>).
+    </li>
+  </ul>
+
+  <div class="callout">
+    <strong>Theoretical Equivalence (Semantic Isomorphism):</strong> Sequence and Communication diagrams express identical semantic information. Any sequence diagram can be mechanically converted to a communication diagram and vice versa; however, sequence diagrams excel at showing timing details, whereas communication diagrams excel at highlighting structural coupling and object cohesion.
+  </div>
+
+  <!-- Section 2 -->
+  <h2>2. Comparative Analysis: Sequence vs. Communication Diagrams</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>UML Sequence Diagram</th>
+        <th>UML Communication (Collaboration) Diagram</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Primary Dimension</strong></td>
+        <td><strong>Time:</strong> Clear downward vertical progression.</td>
+        <td><strong>Space & Structure:</strong> Object graph showing connectivity.</td>
+      </tr>
+      <tr>
+        <td><strong>Message Sequencing</strong></td>
+        <td>Implicitly defined by vertical position on the page.</td>
+        <td>Explicit decimal numbering (e.g., <code>1: request</code>, <code>1.1: subTask</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Object Lifeline</strong></td>
+        <td>Explicit vertical dashed lines with activation focus bars.</td>
+        <td>Implicit; objects appear as simple linked nodes without lifelines.</td>
+      </tr>
+      <tr>
+        <td><strong>Control Logic (alt, opt, loop)</strong></td>
+        <td>Explicitly bounded visual frames/fragments.</td>
+        <td>Notated via guard conditions textually (e.g., <code>[status==active]</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Best Used For</strong></td>
+        <td>Validating complex scenarios, nested calls, and timing.</td>
+        <td>Refactoring, architectural topology, and verifying coupling.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Page Break for Clean Print Layout -->
+  <div class="page-break"></div>
+
+  <!-- Section 3: Sequence Diagrams -->
+  <h2>3. UML Sequence Diagrams for SmartTask</h2>
+
+  <h3>3.1 Sequence Diagram 1: Task Creation, Algorithmic Analysis & In-App Alerting</h3>
+  <p>
+    This diagram illustrates the nominal workflow of submitting an academic task. The React client transmits the task payload to Express, which authenticates via JWT, passes parameters to the heuristic <code>TaskAnalyzer</code> engine to compute the dynamic <em>Smart Priority Score (0–160)</em> and Eisenhower quadrant, stores the record in MongoDB, and triggers <code>ReminderService</code> for tight deadlines (&lt;24 hours).
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 1: Task Creation & Algorithmic Analysis Sequence Diagram</div>
+    <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Student as Student (User)
+    participant UI as TaskForm / TasksView (React)
+    participant AuthMW as AuthMiddleware (JWT)
+    participant TC as TaskController (Express)
+    participant TA as TaskAnalyzer (Service Engine)
+    participant TM as Task (Mongoose Model)
+    participant RS as ReminderService (Service)
+    participant DB as MongoDB Database
+
+    Student ->> UI: Fill form (Title, Deadline, Priority, EstTime) & click "Save Task"
+    activate UI
+    UI ->> AuthMW: POST /api/tasks (Payload + Bearer Token)
+    activate AuthMW
+    
+    AuthMW ->> AuthMW: verifyToken(token) & extract user._id
+    alt Token Valid
+        AuthMW ->> TC: next() -> invoke createTask(req, res)
+        activate TC
+    else Token Invalid / Expired
+        AuthMW -->> UI: 401 Unauthorized
+        UI -->> Student: Prompt session re-login
+    end
+    deactivate AuthMW
+
+    TC ->> TC: Validate mandatory fields (title, category, deadline)
+    TC ->> TA: analyzeTask(taskData)
+    activate TA
+    Note over TA: Calculate Proximity Score + User Weight + Effort Penalty<br/>Assign Eisenhower Matrix Quadrant
+    TA -->> TC: return { smartPriorityScore, smartQuadrant, smartRecommendation }
+    deactivate TA
+
+    TC ->> TM: create({ ...taskData, smartPriorityScore, smartQuadrant })
+    activate TM
+    TM ->> DB: insertOne(taskRecord)
+    activate DB
+    DB -->> TM: acknowledgeInserted(doc)
+    deactivate DB
+    TM -->> TC: taskInstance
+    deactivate TM
+
+    TC ->> TM: findById(task._id).populate('category')
+    activate TM
+    TM ->> DB: queryWithCategoryJoin()
+    activate DB
+    DB -->> TM: populatedDoc
+    deactivate DB
+    TM -->> TC: populatedTask
+    deactivate TM
+
+    TC ->> RS: syncInAppRemindersForStudent(studentId)
+    activate RS
+    RS ->> DB: upsertDeadlineAlerts()
+    activate DB
+    DB -->> RS: alertsSynced
+    deactivate DB
+    RS -->> TC: remindersAcknowledged
+    deactivate RS
+
+    TC -->> UI: 201 Created (populatedTask JSON)
+    deactivate TC
+    UI ->> UI: Refresh Tasks State & Play celebration feedback
+    UI -->> Student: Render Task card in Eisenhower Matrix View
+    deactivate UI
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h3>3.2 Sequence Diagram 2: Automated Smart Daily Schedule Generation (Time-Blocking Engine)</h3>
+  <p>
+    This sequence demonstrates how the <code>SchedulerService</code> packs uncompleted deliverables into focus blocks (50–60 min) interleaved with cognitive breaks (10–15 min) based on student preferences and feasibility calculations.
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 2: Smart Daily Schedule Generation Sequence Diagram</div>
+    <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Student as Student (User)
+    participant UI as ScheduleView (React)
+    participant SC as ScheduleController (Express)
+    participant SS as SchedulerService (Algorithmic Engine)
+    participant UM as User (Mongoose Model)
+    participant TM as Task (Mongoose Model)
+    participant SM as Schedule (Mongoose Model)
+    participant DB as MongoDB Database
+
+    Student ->> UI: Select Target Date & click "Generate Daily Schedule"
+    activate UI
+    UI ->> SC: POST /api/schedule/generate { date, startHour, endHour, blockDuration }
+    activate SC
+
+    SC ->> SS: generateSmartScheduleForStudent(studentId, date, options)
+    activate SS
+
+    SS ->> UM: findById(studentId)
+    activate UM
+    UM ->> DB: queryUserStudyPreferences()
+    activate DB
+    DB -->> UM: studentProfile
+    deactivate DB
+    UM -->> SS: studyPreferences (workStartHour, workEndHour, blockDuration)
+    deactivate UM
+
+    SS ->> TM: find({ student: studentId, status: { $ne: 'completed' } }).sort({ smartPriorityScore: -1 })
+    activate TM
+    TM ->> DB: fetchPendingTasksSorted()
+    activate DB
+    DB -->> TM: prioritizedTasksList
+    deactivate DB
+    TM -->> SS: pendingTasks
+    deactivate TM
+
+    Note over SS: Initialize Timeline (startHour to endHour)<br/>Compute schedule feasibility: "optimal", "heavy", or "overloaded"
+
+    loop While currentMinute + 30 <= endMinute
+        SS ->> SS: Allocate Focus Study Block (50-60 min)
+        SS ->> SS: Assign highest priority task & decrement remaining minutes
+        opt Task fully scheduled (remaining <= 15 min)
+            SS ->> SS: Advance pointer to next pending task
+        end
+        opt Remaining day time >= breakDuration
+            SS ->> SS: Allocate Cognitive Reset Break Block (10-15 min)
+        end
+    end
+
+    SS ->> SM: findOneAndUpdate({ student: studentId, date }, scheduleData, { upsert: true, new: true })
+    activate SM
+    SM ->> DB: upsertScheduleDocument()
+    activate DB
+    DB -->> SM: persistedRecord
+    deactivate DB
+    SM -->> SS: savedSchedule
+    deactivate SM
+
+    SS -->> SC: return savedSchedule
+    deactivate SS
+
+    SC -->> UI: 200 OK (Schedule JSON with time blocks & feasibility score)
+    deactivate SC
+    UI ->> UI: Render interactive visual timeline & metrics
+    UI -->> Student: Display Daily Schedule with Focus Blocks & Break Intervals
+    deactivate UI
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h3>3.3 Sequence Diagram 3: Deep Work Pomodoro Focus Session & Time Logging</h3>
+  <p>
+    This sequence illustrates active focus tracking, acoustic Web Audio cues, automatic increment of <code>actualTimeSpent</code> on linked academic tasks, and in-app milestone generation.
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 3: Deep Work Focus Session Lifecycle Sequence Diagram</div>
+    <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Student as Student (User)
+    participant UI as FocusView / Timer (React & Web Audio)
+    participant FC as FocusController (Express)
+    participant FSM as FocusSession (Mongoose Model)
+    participant TM as Task (Mongoose Model)
+    participant RS as ReminderService (Service)
+    participant DB as MongoDB Database
+
+    Student ->> UI: Select Target Task & click "Start Focus Session"
+    activate UI
+    UI ->> FC: POST /api/focus/start { taskId, notes }
+    activate FC
+    FC ->> FSM: create({ student, task: taskId, startTime: now(), status: 'active' })
+    activate FSM
+    FSM ->> DB: insertFocusSession()
+    activate DB
+    DB -->> FSM: sessionRecord
+    deactivate DB
+    FSM -->> FC: activeSession
+    deactivate FSM
+    FC -->> UI: 201 Created (sessionId)
+    deactivate FC
+
+    UI ->> UI: Start Countdown Clock & Lock Distraction Panels
+    Note over Student, UI: Deep Work Sprint runs (e.g., 25-50 min)
+    Student ->> UI: Timer reaches 00:00 / click "Complete Session"
+    UI ->> UI: Play Web Audio Acoustic Chime & trigger confetti
+
+    UI ->> FC: POST /api/focus/complete { sessionId, durationMinutes, notes, status: 'completed' }
+    activate FC
+    FC ->> FSM: findOneAndUpdate({ _id: sessionId }, { endTime, durationMinutes, status: 'completed' })
+    activate FSM
+    FSM ->> DB: updateSessionDoc()
+    activate DB
+    DB -->> FSM: updatedSessionDoc
+    deactivate DB
+    FSM -->> FC: completedSession
+    deactivate FSM
+
+    opt Session linked to deliverable (taskId != null)
+        FC ->> TM: findByIdAndUpdate(taskId, { $inc: { actualTimeSpent: durationMinutes } })
+        activate TM
+        TM ->> DB: incrementActualTimeSpent()
+        activate DB
+        DB -->> TM: updatedTask
+        deactivate DB
+        TM -->> FC: taskAcknowledged
+        deactivate TM
+    end
+
+    FC ->> RS: createInAppAlert(studentId, { title: 'Focus Completed', severity: 'success' })
+    activate RS
+    RS ->> DB: insertNotificationRecord()
+    activate DB
+    DB -->> RS: notificationPersisted
+    deactivate DB
+    RS -->> FC: alertAcknowledged
+    deactivate RS
+
+    FC -->> UI: 200 OK (Completed session summary)
+    deactivate FC
+    UI ->> UI: Update Daily Focus Metrics & Progress Bars
+    UI -->> Student: Display "Session Completed" milestone modal
+    deactivate UI
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Section 4: Communication Diagrams -->
+  <h2>4. UML Communication (Collaboration) Diagrams for SmartTask</h2>
+
+  <h3>4.1 Communication Diagram 1: Task Management & Algorithmic Priority Assessment</h3>
+  <p>
+    This diagram maps the structural collaboration among objects when a task is submitted. Numbered messages denote execution order and nested calls along the communication links.
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 4: Task Management Communication (Collaboration) Diagram</div>
+    <div class="mermaid">
+flowchart TD
+    classDef actorStyle fill:#f8fafc,stroke:#059669,stroke-width:2px,color:#0f172a;
+    classDef clientStyle fill:#f8fafc,stroke:#2563eb,stroke-width:2px,color:#0f172a;
+    classDef controllerStyle fill:#f8fafc,stroke:#7c3aed,stroke-width:2px,color:#0f172a;
+    classDef serviceStyle fill:#f8fafc,stroke:#d97706,stroke-width:2px,color:#0f172a;
+    classDef modelStyle fill:#f8fafc,stroke:#db2777,stroke-width:2px,color:#0f172a;
+    classDef dbStyle fill:#f1f5f9,stroke:#0d9488,stroke-width:2px,color:#0f172a;
+
+    Student["Student (User)"]:::actorStyle
+    Client["ReactApp : TaskView"]:::clientStyle
+    Controller["TaskController : Express"]:::controllerStyle
+    Analyzer["TaskAnalyzer : Engine"]:::serviceStyle
+    TaskModel["Task : Mongoose Model"]:::modelStyle
+    ReminderSvc["ReminderService"]:::serviceStyle
+    NotifModel["Notification : Model"]:::modelStyle
+    DB[("MongoDB Database")]:::dbStyle
+
+    Student ---|"1: submitTaskForm(data) &rarr;"| Client
+    Client ---|"2: POST /api/tasks &rarr;<br/>7: 201 Created &larr;"| Controller
+    Controller ---|"3: smartAnalysis := analyzeTask(data) &rarr;"| Analyzer
+    Controller ---|"4: create(taskData) &rarr;<br/>4.3: populatedDoc := findById() &rarr;"| TaskModel
+    TaskModel ---|"4.1: insertDocument() &rarr;<br/>4.2: queryPopulate() &rarr;"| DB
+    Controller ---|"5: syncInAppReminders(studentId) &rarr;"| ReminderSvc
+    ReminderSvc ---|"5.1: findPendingTasks() &rarr;"| TaskModel
+    ReminderSvc ---|"5.2: upsertDeadlineAlert() &rarr;"| NotifModel
+    NotifModel ---|"5.3: writeNotification() &rarr;"| DB
+    Client ---|"8: renderTaskInMatrix() &rarr;"| Student
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h3>4.2 Communication Diagram 2: Smart Daily Schedule Planner & Time-Blocking Engine</h3>
+  <p>
+    This diagram illustrates the topological structure and message flow between the client, schedule controller, scheduling heuristic engine, user model, task model, and persistence layer.
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 5: Schedule Planner Communication (Collaboration) Diagram</div>
+    <div class="mermaid">
+flowchart TD
+    classDef actorStyle fill:#f8fafc,stroke:#059669,stroke-width:2px,color:#0f172a;
+    classDef clientStyle fill:#f8fafc,stroke:#2563eb,stroke-width:2px,color:#0f172a;
+    classDef controllerStyle fill:#f8fafc,stroke:#7c3aed,stroke-width:2px,color:#0f172a;
+    classDef serviceStyle fill:#f8fafc,stroke:#d97706,stroke-width:2px,color:#0f172a;
+    classDef modelStyle fill:#f8fafc,stroke:#db2777,stroke-width:2px,color:#0f172a;
+    classDef dbStyle fill:#f1f5f9,stroke:#0d9488,stroke-width:2px,color:#0f172a;
+
+    Student["Student (User)"]:::actorStyle
+    Client["ReactApp : ScheduleView"]:::clientStyle
+    Controller["ScheduleController : Express"]:::controllerStyle
+    SchedulerSvc["SchedulerService : Engine"]:::serviceStyle
+    UserModel["User : Mongoose Model"]:::modelStyle
+    TaskModel["Task : Mongoose Model"]:::modelStyle
+    ScheduleModel["Schedule : Mongoose Model"]:::modelStyle
+    DB[("MongoDB Database")]:::dbStyle
+
+    Student ---|"1: requestDailySchedule(date, prefs) &rarr;"| Client
+    Client ---|"2: POST /api/schedule/generate &rarr;<br/>6: 200 OK (scheduleData) &larr;"| Controller
+    Controller ---|"3: generateSmartSchedule(studentId, date, options) &rarr;"| SchedulerSvc
+    SchedulerSvc ---|"3.1: findById(studentId) &rarr;"| UserModel
+    UserModel ---|"3.2: queryUserPreferences() &rarr;"| DB
+    SchedulerSvc ---|"3.3: findPendingTasksSortedByScore() &rarr;"| TaskModel
+    TaskModel ---|"3.4: queryPrioritizedTasks() &rarr;"| DB
+    SchedulerSvc ---|"3.5: packTimeSlotsAndBreaks() &rarr;<br/>3.6: calculateFeasibilityScore() &rarr;"| SchedulerSvc
+    SchedulerSvc ---|"4: findOneAndUpdate({student, date}, data, upsert) &rarr;"| ScheduleModel
+    ScheduleModel ---|"4.1: persistScheduleDocument() &rarr;"| DB
+    SchedulerSvc ---|"5: return generatedScheduleDoc &rarr;"| Controller
+    Client ---|"7: displayTimeBlocksAndFeasibility() &rarr;"| Student
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h3>4.3 Communication Diagram 3: Deep Work Focus Session & Milestone Logging</h3>
+  <p>
+    This diagram exhibits the structural linkages between the active focus timer, focus session controller, session model, task time tracker, and in-app alert subsystem upon session completion.
+  </p>
+
+  <div class="diagram-card">
+    <div class="diagram-title">Figure 6: Focus Session Communication (Collaboration) Diagram</div>
+    <div class="mermaid">
+flowchart TD
+    classDef actorStyle fill:#f8fafc,stroke:#059669,stroke-width:2px,color:#0f172a;
+    classDef clientStyle fill:#f8fafc,stroke:#2563eb,stroke-width:2px,color:#0f172a;
+    classDef controllerStyle fill:#f8fafc,stroke:#7c3aed,stroke-width:2px,color:#0f172a;
+    classDef serviceStyle fill:#f8fafc,stroke:#d97706,stroke-width:2px,color:#0f172a;
+    classDef modelStyle fill:#f8fafc,stroke:#db2777,stroke-width:2px,color:#0f172a;
+    classDef dbStyle fill:#f1f5f9,stroke:#0d9488,stroke-width:2px,color:#0f172a;
+
+    Student["Student (User)"]:::actorStyle
+    Client["ReactApp : FocusTimer"]:::clientStyle
+    Controller["FocusController : Express"]:::controllerStyle
+    FocusModel["FocusSession : Mongoose Model"]:::modelStyle
+    TaskModel["Task : Mongoose Model"]:::modelStyle
+    ReminderSvc["ReminderService"]:::serviceStyle
+    NotifModel["Notification : Model"]:::modelStyle
+    DB[("MongoDB Database")]:::dbStyle
+
+    Student ---|"1: completeFocusSession(notes) &rarr;"| Client
+    Client ---|"1.1: playAcousticChime() &rarr;<br/>2: POST /api/focus/complete &rarr;<br/>6: 200 OK (sessionData) &larr;"| Controller
+    Controller ---|"3: updateSessionStatusAndDuration() &rarr;"| FocusModel
+    FocusModel ---|"3.1: saveCompletedSession() &rarr;"| DB
+    Controller ---|"4: incrementActualTimeSpent(duration) &rarr;"| TaskModel
+    TaskModel ---|"4.1: findByIdAndUpdate() &rarr;"| DB
+    Controller ---|"5: createInAppAlert(successPayload) &rarr;"| ReminderSvc
+    ReminderSvc ---|"5.1: createNotification() &rarr;"| NotifModel
+    NotifModel ---|"5.2: insertAlertRecord() &rarr;"| DB
+    Client ---|"7: renderMilestoneModalAndRefreshStats() &rarr;"| Student
+    </div>
+  </div>
+
+  <!-- Section 5: Implementation Traceability -->
+  <h2>5. Implementation Traceability Matrix</h2>
+  <p>
+    The table below establishes exact traceability between the UML diagram interactions and the implemented source code modules within the repository:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Interaction Step</th>
+        <th>Operation / Endpoint</th>
+        <th>Source Code File Reference</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Task Creation API</td>
+        <td><code>POST /api/tasks</code></td>
+        <td><code>backend/routes/taskRoutes.js</code></td>
+      </tr>
+      <tr>
+        <td>Smart Priority Calculation</td>
+        <td><code>analyzeTask(taskData)</code></td>
+        <td><code>backend/services/taskAnalyzer.js</code></td>
+      </tr>
+      <tr>
+        <td>Task Document Insertion</td>
+        <td><code>Task.create(taskData)</code></td>
+        <td><code>backend/controllers/taskController.js (L28)</code></td>
+      </tr>
+      <tr>
+        <td>Deadline Proximity Alerts</td>
+        <td><code>syncInAppRemindersForStudent(id)</code></td>
+        <td><code>backend/services/reminderService.js (L50)</code></td>
+      </tr>
+      <tr>
+        <td>Daily Schedule API</td>
+        <td><code>POST /api/schedule/generate</code></td>
+        <td><code>backend/routes/scheduleRoutes.js</code></td>
+      </tr>
+      <tr>
+        <td>Time-Blocking Algorithm</td>
+        <td><code>generateSmartScheduleForStudent()</code></td>
+        <td><code>backend/services/schedulerService.js (L13)</code></td>
+      </tr>
+      <tr>
+        <td>Schedule Persistence</td>
+        <td><code>Schedule.findOneAndUpdate(..., { upsert: true })</code></td>
+        <td><code>backend/services/schedulerService.js (L114)</code></td>
+      </tr>
+      <tr>
+        <td>Focus Session Start / Stop</td>
+        <td><code>POST /api/focus/start</code> &amp; <code>/complete</code></td>
+        <td><code>backend/controllers/focusController.js (L5, L23)</code></td>
+      </tr>
+      <tr>
+        <td>Cumulative Time Spent</td>
+        <td><code>Task.findByIdAndUpdate({ $inc: { actualTimeSpent } })</code></td>
+        <td><code>backend/controllers/focusController.js (L38)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Document Footer -->
+  <div style="margin-top: 40px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
+    <span>SmartTask System Architecture Specification &bull; UML 2.5 Standard</span>
+    <span>Generated for Academic & Architectural Documentation</span>
+  </div>
+
+</body>
+</html>

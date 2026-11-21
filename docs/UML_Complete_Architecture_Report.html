@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartTask Planner — UML Diagrams & Software Architecture Project Report</title>
+  <!-- Mermaid.js Library for dynamic diagram rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      themeVariables: {
+        primaryColor: '#e0f2fe',
+        primaryTextColor: '#0f172a',
+        primaryBorderColor: '#38bdf8',
+        lineColor: '#475569',
+        secondaryColor: '#f1f5f9',
+        tertiaryColor: '#ffffff',
+        background: '#ffffff',
+        mainBkg: '#ffffff',
+        nodeBorder: '#94a3b8'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        mirrorActors: false,
+        useMaxWidth: true,
+        actorFontSize: 13,
+        messageFontSize: 12
+      }
+    });
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    /* 100% LIGHT MODE CLEAN THEME */
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-page);
+      line-height: 1.6;
+      padding: 24px 32px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+        color: #000;
+        max-width: 100%;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      .diagram-card,
+      .table-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+      }
+    }
+
+    /* Light Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .toolbar-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-pill {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid #bfdbfe;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      margin-left: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* Report Header */
+    .report-header {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .project-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .meta-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      background: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .meta-item strong {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .meta-item span {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    /* Table of Contents */
+    .toc-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .toc-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .toc-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px 18px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-list a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .toc-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .num-pill {
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #334155;
+      margin-bottom: 12px;
+      line-height: 1.65;
+    }
+
+    /* Diagram Card (100% Light Mode) */
+    .diagram-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 18px 0 24px 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .diagram-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .diagram-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .diagram-type {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      text-transform: uppercase;
+    }
+
+    .diagram-viewport {
+      background: #ffffff !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 6px;
+      overflow-x: auto;
+    }
+
+    /* Explicit light style for Mermaid container */
+    .mermaid {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Callout & Explanation Cards */
+    .callout {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-size: 13.5px;
+      color: #1e3a8a;
+    }
+
+    .callout-amber {
+      background: var(--amber-light);
+      border-left: 4px solid var(--amber);
+      color: #78350f;
+    }
+
+    .callout-green {
+      background: var(--success-light);
+      border-left: 4px solid var(--success);
+      color: #14532d;
+    }
+
+    /* Grid for Justifications */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card-mini {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+
+    .card-mini h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-mini p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* Tables */
+    .table-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafafa;
+    }
+
+    /* Code styling - Clean Light Mode */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      background: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+    }
+
+    pre {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: #0f172a;
+      overflow-x: auto;
+      margin: 12px 0;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    ul,
+    ol {
+      margin-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      font-size: 13.5px;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="toolbar no-print">
+    <div class="toolbar-title">
+      <span class="badge-pill">COLLEGE PROJECT REPORT</span>
+      SmartTask Planner — UML Diagrams & Architecture
+    </div>
+    <div>
+      <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+      <a href="#jwt-guide" class="btn btn-secondary">JWT Secret Guide</a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="report-header">
+    <div class="project-tag">Computer Science & Engineering &bull; Software Engineering Viva Report</div>
+    <h1>SmartTask Planner: Simple UML Diagrams & Architectural Justification</h1>
+    <p class="subtitle">
+      A simple, straightforward software engineering design document for the <strong>SmartTask Planner</strong>
+      application. Designed to be clear, easy to explain during college lab evaluations, presentations, and viva exams.
+    </p>
+    <div class="meta-box">
+      <div class="meta-item">
+        <strong>Project Name</strong>
+        <span>SmartTask Planner</span>
+      </div>
+      <div class="meta-item">
+        <strong>Architecture</strong>
+        <span>3-Tier Architecture (Client-Server REST)</span>
+      </div>
+      <div class="meta-item">
+        <strong>Tech Stack</strong>
+        <span>React.js (Frontend) + Node/Express (Backend) + MongoDB</span>
+      </div>
+      <div class="meta-item">
+        <strong>Auth Method</strong>
+        <span>JWT (JSON Web Token)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 1. ARCHITECTURAL IDENTIFICATION & JUSTIFICATION -->
+  <!-- ======================================================== -->
+  <section id="arch">
+    <h2><span class="num-pill">01</span> Identification & Justification of Architectural Style</h2>
+    <p>
+      The <strong>SmartTask Planner</strong> follows the standard <strong>Three-Tier Client-Server Architecture</strong>
+      using the <strong>RESTful API</strong> pattern. It splits the whole application into 3 clean, independent layers:
+    </p>
+
+    <!-- Architecture Diagram -->
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Simple 3-Tier Architecture Flow</div>
+        <span class="diagram-type">Architecture Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart TD
+          subgraph Tier1["Tier 1: Presentation Layer (Frontend)"]
+          UI["React.js Single Page App<br />(Dashboard, Tasks, Calendar, Pomodoro Timer)"]
+          ClientState["Axios HTTP Client + LocalStorage (JWT)"]
+          UI --> ClientState
+          end
+
+          subgraph Tier2["Tier 2: Application / Business Logic Layer (Backend)"]
+          ExpressRoutes["Express REST API Routes"]
+          AuthGuard["Auth Middleware (JWT Verification)"]
+          Controllers["Controllers & Scheduler Algorithms"]
+          ExpressRoutes --> AuthGuard
+          AuthGuard --> Controllers
+          end
+
+          subgraph Tier3["Tier 3: Database Layer (Persistent Storage)"]
+          DB[("MongoDB Database<br />(Collections: Users, Tasks, Schedules)")]
+          end
+
+          ClientState -->|HTTP Requests with JWT Bearer Token| ExpressRoutes
+          Controllers -->|Mongoose Queries / Save| DB
+        </div>
+      </div>
+    </div>
+
+    <h3>Justification (Why did we choose this architecture?)</h3>
+    <p>Here are 5 simple reasons to explain why 3-tier architecture is best for this student project:</p>
+
+    <div class="grid-2">
+      <div class="card-mini">
+        <h4>1. Separation of Work (Modularity)</h4>
+        <p>The frontend team can easily design UI screens in React without worrying about database queries. The backend
+          handles business calculations (e.g. scheduling slots) independently.</p>
+      </div>
+
+      <div class="card-mini">
+        <h4>2. Easy to Maintain & Debug</h4>
+        <p>If we change a button color or calendar UI in React, the backend doesn't crash. If we update a task priority
+          algorithm in Express, the frontend code remains untouched.</p>
+      </div>
+
+      <div class="card-mini">
+        <h4>3. Stateless Scalability with JWT</h4>
+        <p>Instead of storing login sessions on the server, we use JSON Web Tokens. Each request carries the token,
+          meaning the server doesn't waste RAM keeping millions of session cookies.</p>
+      </div>
+
+      <div class="card-mini">
+        <h4>4. MongoDB Document Flexibility</h4>
+        <p>Academic tasks have varied fields: subtasks list, tags, duration, and priority. MongoDB stores them naturally
+          as JSON/BSON documents without complex multi-table SQL joins.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <strong>Viva Summary:</strong> "Our project uses a 3-tier client-server architecture with React for Tier 1
+      (Presentation), Express & Node.js for Tier 2 (Application logic), and MongoDB for Tier 3 (Database), connected
+      securely via RESTful APIs and JWT tokens."
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 2. USE CASE DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="usecase">
+    <h2><span class="num-pill">02</span> UML Use Case Diagram</h2>
+    <p>
+      This diagram shows what actions different actors (Student and Admin) can perform in the application.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">System Actors and Use Cases</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart LR
+          Student((Student))
+          Admin((Admin))
+
+          subgraph App["SmartTask Planner System Boundary"]
+          UC1(["Register & Login"])
+          UC2(["Create & Edit Tasks"])
+          UC3(["Generate Auto Daily Schedule"])
+          UC4(["Run Pomodoro Focus Timer"])
+          UC5(["View Productivity Stats"])
+          UC6(["Manage System Users & Categories"])
+          end
+
+          Student --> UC1
+          Student --> UC2
+          Student --> UC3
+          Student --> UC4
+          Student --> UC5
+
+          Admin --> UC1
+          Admin --> UC5
+          Admin --> UC6
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 3. CLASS DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="class">
+    <h2><span class="num-pill">03</span> UML Class Diagram</h2>
+    <p>
+      This diagram shows the main entities (models), their basic attributes, and simple relationships.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Core Domain Classes & Relationships</div>
+        <span class="diagram-type">Structural Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          classDiagram
+          class User {
+          +String name
+          +String email
+          +String password
+          +String role
+          +register()
+          +login()
+          }
+
+          class Task {
+          +String title
+          +String description
+          +String priority
+          +String status
+          +Date dueDate
+          +Number durationMinutes
+          +markCompleted()
+          }
+
+          class Category {
+          +String name
+          +String color
+          +String icon
+          }
+
+          class Schedule {
+          +Date date
+          +Array timeBlocks
+          +generateSchedule()
+          }
+
+          class FocusSession {
+          +Number durationMinutes
+          +String sessionType
+          +String status
+          +startTimer()
+          +pauseTimer()
+          }
+
+          User "1" --> "*" Task : creates
+          User "1" --> "*" Schedule : owns
+          User "1" --> "*" FocusSession : logs
+          Task "*" --> "1" Category : belongs to
+          Schedule "1" --> "*" Task : allocates
+          FocusSession "1" --> "1" Task : tracks
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 4. SEQUENCE DIAGRAM: LOGIN -->
+  <!-- ======================================================== -->
+  <section id="seq-login">
+    <h2><span class="num-pill">04</span> UML Sequence Diagram: Student Login & JWT Flow</h2>
+    <p>
+      Step-by-step sequence of events when a student logs in to get their JWT token.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">User Authentication & Token Generation</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          actor Student as Student (Browser)
+          participant UI as React UI (AuthView)
+          participant Server as Express Server (authController)
+          participant DB as MongoDB (Users Collection)
+
+          Student->>UI: Enter Email & Password
+          UI->>Server: HTTP POST /api/auth/login
+          Server->>DB: Find user by email
+          DB-->>Server: Return User Record
+          Server->>Server: Verify Password (bcrypt) & Sign JWT
+          Server-->>UI: 200 OK + { token, user }
+          UI->>UI: Save JWT in LocalStorage
+          UI-->>Student: Navigate to Dashboard Screen
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 5. SEQUENCE DIAGRAM: CREATE TASK -->
+  <!-- ======================================================== -->
+  <section id="seq-task">
+    <h2><span class="num-pill">05</span> UML Sequence Diagram: Create Task & Auto-Schedule</h2>
+    <p>
+      Step-by-step sequence of adding a new assignment and generating a daily timetable slot.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Task Creation & Smart Slotting</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          actor Student as Student
+          participant UI as React UI (TasksView)
+          participant Server as Express Server
+          participant Sched as Scheduler Service
+          participant DB as MongoDB
+
+          Student->>UI: Fill task title, priority, due date & save
+          UI->>Server: HTTP POST /api/tasks (with JWT in Header)
+          Server->>Server: Validate JWT token
+          Server->>DB: Insert Task Document
+          DB-->>Server: Task Saved
+          Server->>Sched: Calculate free slot in student timetable
+          Sched-->>Server: Allocated TimeBlock (e.g. 10:00 - 11:30)
+          Server-->>UI: 201 Created + Updated Schedule
+          UI-->>Student: Display new Task on Schedule Calendar
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 6. ACTIVITY DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="activity">
+    <h2><span class="num-pill">06</span> UML Activity Diagram: Task Lifecycle & Planning Flow</h2>
+    <p>
+      Workflow showing the decision-making process from task creation to completion.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Activity Flowchart with Decision Branches</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart TD
+          Start([Start]) --> Login[Student Logs into Portal]
+          Login --> OpenDash[Open Tasks Dashboard]
+          OpenDash --> AddTask[Click 'Add Task']
+          AddTask --> FillForm[Enter Title, Due Date, and Priority]
+          FillForm --> AutoSlot{Enable Smart Schedule?}
+
+          AutoSlot -- Yes --> CalcSlot[Backend finds best free study hour]
+          CalcSlot --> Save[Save Task to MongoDB]
+
+          AutoSlot -- No --> Save
+          Save --> StartFocus[Start Pomodoro Focus Timer]
+          StartFocus --> WorkDone{Is Assignment Finished?}
+
+          WorkDone -- Yes --> Complete[Mark Task as Completed]
+          WorkDone -- No --> Postpone[Reschedule Remaining Part to Tomorrow]
+
+          Complete --> End([End Task Workflow])
+          Postpone --> End
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 7. STATE MACHINE DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="state">
+    <h2><span class="num-pill">07</span> UML State Machine Diagram: Task States</h2>
+    <p>
+      Shows the different states a Task goes through during its lifecycle.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Task Statechart</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          stateDiagram-v2
+          [*] --> Pending : Task Created
+          Pending --> In_Progress : Start Working / Timer
+          In_Progress --> Paused : Pause Study Session
+          Paused --> In_Progress : Resume Work
+          In_Progress --> Completed : Mark as Done
+          Pending --> Completed : Quick Complete
+          Completed --> Archived : Archive to History
+          Archived --> [*] : Delete Task
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 8. COMPONENT DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="component">
+    <h2><span class="num-pill">08</span> UML Component Diagram</h2>
+    <p>
+      Shows the software components that make up the frontend, backend, and database.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">System Software Components</div>
+        <span class="diagram-type">Structural Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart TD
+          subgraph Frontend["Frontend Client (React.js)"]
+          UI_Comp["React Views & UI Components"]
+          Auth_Comp["AuthContext (User State)"]
+          API_Comp["Axios HTTP Service"]
+          UI_Comp --> Auth_Comp
+          Auth_Comp --> API_Comp
+          end
+
+          subgraph Backend["Backend Application (Express.js)"]
+          Route_Comp["Express API Routes"]
+          Auth_MW["JWT Protect Middleware"]
+          Controllers["Task & Schedule Controllers"]
+          Route_Comp --> Auth_MW
+          Auth_MW --> Controllers
+          end
+
+          subgraph Persistence["Database (MongoDB)"]
+          Mongoose_Models["Mongoose Models"]
+          DB_Store[("smarttask_db Collections")]
+          Mongoose_Models --> DB_Store
+          end
+
+          API_Comp -->|HTTP REST Requests| Route_Comp
+          Controllers -->|CRUD Operations| Mongoose_Models
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 9. DEPLOYMENT DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="deployment">
+    <h2><span class="num-pill">09</span> UML Deployment Diagram</h2>
+    <p>
+      Shows the physical/hardware nodes where each piece of software runs.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Physical Nodes & Protocols</div>
+        <span class="diagram-type">Structural Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart TD
+          subgraph ClientDevice["Student Computer / Laptop"]
+          Browser["Web Browser (Chrome / Edge / Firefox)<br />Runs React SPA"]
+          end
+
+          subgraph ServerNode["Local / Cloud Node.js Server"]
+          ExpressServer["Node.js + Express Web Server (Port 5000)<br />Handles API & JWT verification"]
+          end
+
+          subgraph DBNode["Database Host"]
+          MongoDBInstance["MongoDB Daemon (Port 27017)<br />Stores smarttask_db data"]
+          end
+
+          Browser -->|HTTP REST on Port 5000| ExpressServer
+          ExpressServer -->|TCP Connection on Port 27017| MongoDBInstance
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 10. PACKAGE DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="package">
+    <h2><span class="num-pill">10</span> UML Package Diagram</h2>
+    <p>
+      Shows how the folders and source files are organized into logical packages.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Folder Structure & Package Organization</div>
+        <span class="diagram-type">Structural Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart TD
+          subgraph FrontendPackage["frontend / src Package"]
+          Views["views Package<br />(Dashboard, Tasks, Calendar, Focus, Admin)"]
+          Components["components Package<br />(Navbar, TaskModal, Toast)"]
+          Context["context Package<br />(AuthContext, NotificationContext)"]
+          API["api Package<br />(api.js Axios Client)"]
+          Views --> Components
+          Views --> Context
+          Context --> API
+          end
+
+          subgraph BackendPackage["backend Package"]
+          Routes["routes Package<br />(authRoutes, taskRoutes, scheduleRoutes)"]
+          Middleware["middleware Package<br />(auth.js JWT Protect)"]
+          Controllers["controllers Package<br />(authController, taskController)"]
+          Models["models Package<br />(User, Task, Category, Schedule)"]
+          Routes --> Middleware
+          Middleware --> Controllers
+          Controllers --> Models
+          end
+
+          API -->|HTTP REST Calls| Routes
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 11. OBJECT DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="object">
+    <h2><span class="num-pill">11</span> UML Object Diagram (Runtime Example Snapshot)</h2>
+    <p>
+      Shows real sample instances in memory when student Swami is using the app.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Concrete Object Instances Snapshot</div>
+        <span class="diagram-type">Structural Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          classDiagram
+          class Swami_User {
+          name = "Swami"
+          email = "swami@college.edu"
+          role = "student"
+          course = "Computer Science"
+          }
+
+          class Assignment_Task {
+          title = "Complete DBMS Lab Assignment"
+          priority = "high"
+          status = "in_progress"
+          dueDate = "2026-11-05"
+          duration = 90
+          }
+
+          class Study_Category {
+          name = "Academics"
+          color = "#2563eb"
+          }
+
+          class Today_Schedule {
+          date = "2026-11-02"
+          slot = "10:00 AM - 11:30 AM"
+          }
+
+          class Active_FocusSession {
+          duration = 25
+          type = "pomodoro"
+          status = "active"
+          }
+
+          Swami_User --> Assignment_Task : owns
+          Assignment_Task --> Study_Category : categorized in
+          Swami_User --> Today_Schedule : scheduled for
+          Today_Schedule --> Assignment_Task : contains
+          Swami_User --> Active_FocusSession : starts
+          Active_FocusSession --> Assignment_Task : timer for
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 12. COMMUNICATION DIAGRAM -->
+  <!-- ======================================================== -->
+  <section id="communication">
+    <h2><span class="num-pill">12</span> UML Communication Diagram</h2>
+    <p>
+      Numbered interaction diagram highlighting object relationships and sequence during user login.
+    </p>
+
+    <div class="diagram-card">
+      <div class="diagram-header">
+        <div class="diagram-title">Numbered Collaboration Graph (Student Login)</div>
+        <span class="diagram-type">Behavioral Diagram</span>
+      </div>
+      <div class="diagram-viewport">
+        <div class="mermaid">
+          flowchart LR
+          Student((Student))
+          UI["1: Input Email & Password<br />4: Render Dashboard"]
+          Server["2: POST /api/auth/login<br />3: Sign & Return JWT Token"]
+          DB[("MongoDB Users")]
+
+          Student --> UI
+          UI --> Server
+          Server -->|Query user by email| DB
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--> Footer -->
+  <footer>
+    <p>&copy; 2026 SmartTask Planner &bull; Academic Software Engineering Project Report &bull; Prepared for Viva &
+      Documentation</p>
+  </footer>
+
+
+</body>
+
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTask Planner — UML Diagrams & Software Architecture Project Report</title>
+    <!-- Mermaid.js Library for dynamic diagram rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            themeVariables: {
+                primaryColor: '#e0f2fe',
+                primaryTextColor: '#0f172a',
+                primaryBorderColor: '#38bdf8',
+                lineColor: '#475569',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#ffffff',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                nodeBorder: '#94a3b8'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            sequence: {
+                mirrorActors: false,
+                useMaxWidth: true,
+                actorFontSize: 13,
+                messageFontSize: 12
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        /* 100% LIGHT MODE CLEAN THEME */
+        :root {
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --border-focus: #3b82f6;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --amber: #d97706;
+            --amber-light: #fffbeb;
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-page);
+            line-height: 1.6;
+            padding: 24px 32px;
+            max-width: 1060px;
+            margin: 0 auto;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                padding: 0;
+                background: #ffffff;
+                color: #000;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .diagram-card,
+            .table-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                break-inside: avoid;
+            }
+        }
+
+        /* Light Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .toolbar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-pill {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid #bfdbfe;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            margin-left: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Report Header */
+        .report-header {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .project-tag {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .meta-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .meta-item strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .meta-item span {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Table of Contents */
+        .toc-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 28px;
+        }
+
+        .toc-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 8px 18px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .toc-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 36px;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .num-pill {
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 12px;
+            line-height: 1.65;
+        }
+
+        /* Diagram Card (100% Light Mode) */
+        .diagram-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 18px 0 24px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .diagram-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .diagram-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .diagram-type {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            text-transform: uppercase;
+        }
+
+        .diagram-viewport {
+            background: #ffffff !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 6px;
+            overflow-x: auto;
+        }
+
+        /* Explicit light style for Mermaid container */
+        .mermaid {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Callout & Explanation Cards */
+        .callout {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            margin: 14px 0;
+            font-size: 13.5px;
+            color: #1e3a8a;
+        }
+
+        .callout-amber {
+            background: var(--amber-light);
+            border-left: 4px solid var(--amber);
+            color: #78350f;
+        }
+
+        .callout-green {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+            color: #14532d;
+        }
+
+        /* Grid for Justifications */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .card-mini {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px 16px;
+        }
+
+        .card-mini h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-mini p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Tables */
+        .table-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 9px 12px;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        /* Code styling - Clean Light Mode */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            background: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        pre {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: #0f172a;
+            overflow-x: auto;
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        ul,
+        ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        li {
+            font-size: 13.5px;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Toolbar -->
+    <div class="toolbar no-print">
+        <div class="toolbar-title">
+            <span class="badge-pill">COLLEGE PROJECT REPORT</span>
+            SmartTask Planner — UML Diagrams & Architecture
+        </div>
+        <div>
+            <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+            <a href="#jwt-guide" class="btn btn-secondary">JWT Secret Guide</a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="report-header">
+        <div class="project-tag">Computer Science & Engineering &bull; Software Engineering Viva Report</div>
+        <h1>SmartTask Planner: Simple UML Diagrams & Architectural Justification</h1>
+        <p class="subtitle">
+            A simple, straightforward software engineering design document for the <strong>SmartTask Planner</strong>
+            application. Designed to be clear, easy to explain during college lab evaluations, presentations, and viva
+            exams.
+        </p>
+        <div class="meta-box">
+            <div class="meta-item">
+                <strong>Project Name</strong>
+                <span>SmartTask Planner</span>
+            </div>
+            <div class="meta-item">
+                <strong>Architecture</strong>
+                <span>3-Tier Architecture (Client-Server REST)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Tech Stack</strong>
+                <span>React.js (Frontend) + Node/Express (Backend) + MongoDB</span>
+            </div>
+            <div class="meta-item">
+                <strong>Auth Method</strong>
+                <span>JWT (JSON Web Token)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- 1. ARCHITECTURAL IDENTIFICATION & JUSTIFICATION -->
+    <!-- ======================================================== -->
+    <section id="arch">
+        <h2><span class="num-pill">01</span> Identification & Justification of Architectural Style</h2>
+        <p>
+            The <strong>SmartTask Planner</strong> follows the standard <strong>Three-Tier Client-Server
+                Architecture</strong>
+            using the <strong>RESTful API</strong> pattern. It splits the whole application into 3 clean, independent
+            layers:
+        </p>
+
+        <!-- Architecture Diagram -->
+        <div class="diagram-card">
+            <div class="diagram-header">
+                <div class="diagram-title">Simple 3-Tier Architecture Flow</div>
+                <span class="diagram-type">Architecture Diagram</span>
+            </div>
+            <div class="diagram-viewport">
+                <div class="mermaid">
+                    flowchart TD
+                    subgraph Tier1["Tier 1: Presentation Layer (Frontend)"]
+                    UI["React.js Single Page App<br />(Dashboard, Tasks, Calendar, Pomodoro Timer)"]
+                    ClientState["Axios HTTP Client + LocalStorage (JWT)"]
+                    UI --> ClientState
+                    end
+
+                    subgraph Tier2["Tier 2: Application / Business Logic Layer (Backend)"]
+                    ExpressRoutes["Express REST API Routes"]
+                    AuthGuard["Auth Middleware (JWT Verification)"]
+                    Controllers["Controllers & Scheduler Algorithms"]
+                    ExpressRoutes --> AuthGuard
+                    AuthGuard --> Controllers
+                    end
+
+                    subgraph Tier3["Tier 3: Database Layer (Persistent Storage)"]
+                    DB[("MongoDB Database<br />(Collections: Users, Tasks, Schedules)")]
+                    end
+
+                    ClientState -->|HTTP Requests with JWT Bearer Token| ExpressRoutes
+                    Controllers -->|Mongoose Queries / Save| DB
+                </div>
+            </div>
+        </div>
+
+        <h3>Justification (Why did we choose this architecture?)</h3>
+        <p>Here are 5 simple reasons to explain why 3-tier architecture is best for this student project:</p>
+
+        <div class="grid-2">
+            <div class="card-mini">
+                <h4>1. Separation of Work (Modularity)</h4>
+                <p>The frontend team can easily design UI screens in React without worrying about database queries. The
+                    backend
+                    handles business calculations (e.g. scheduling slots) independently.</p>
+            </div>
+
+            <div class="card-mini">
+                <h4>2. Easy to Maintain & Debug</h4>
+                <p>If we change a button color or calendar UI in React, the backend doesn't crash. If we update a task
+                    priority
+                    algorithm in Express, the frontend code remains untouched.</p>
+            </div>
+
+            <div class="card-mini">
+                <h4>3. Stateless Scalability with JWT</h4>
+                <p>Instead of storing login sessions on the server, we use JSON Web Tokens. Each request carries the
+                    token,
+                    meaning the server doesn't waste RAM keeping millions of session cookies.</p>
+            </div>
+
+            <div class="card-mini">
+                <h4>4. MongoDB Document Flexibility</h4>
+                <p>Academic tasks have varied fields: subtasks list, tags, duration, and priority. MongoDB stores them
+                    naturally
+                    as JSON/BSON documents without complex multi-table SQL joins.</p>
+            </div>
+        </div>
+
+        <div class="callout callout-green">
+            <strong>Viva Summary:</strong> "Our project uses a 3-tier client-server architecture with React for Tier 1
+            (Presentation), Express & Node.js for Tier 2 (Application logic), and MongoDB for Tier 3 (Database),
+            connected
+            securely via RESTful APIs and JWT tokens."
+        </div>
+    </section>
+
+</body>
+
+</html>
