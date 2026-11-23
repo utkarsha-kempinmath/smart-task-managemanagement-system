@@ -22,6 +22,17 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    system: 'SmartTask Backend API',
+    message: 'SmartTask Backend API is running successfully on Render!',
+    health: '/api/health',
+    timestamp: new Date()
+  });
+});
+
 // Health check route
 app.get('/api/health', (req, res) => {
   res.json({

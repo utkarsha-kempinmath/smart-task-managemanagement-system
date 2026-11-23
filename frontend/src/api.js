@@ -1,10 +1,15 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
-  const customPort = sessionStorage.getItem('smarttask_port');
-  if (customPort) {
-    return `http://localhost:${customPort}/api`;
+  // Allow explicit override via environment variable if set
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
   }
+  // In production builds (e.g. Vercel, Netlify, Render Static), use the live Render backend API
+  if (import.meta.env.PROD) {
+    return 'https://smart-task-managemanagement-system.onrender.com/api';
+  }
+  // In local development, fallback to the local Vite proxy
   return '/api';
 };
 
